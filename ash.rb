@@ -18,6 +18,13 @@ class Ash < Formula
     # Install shell integration
     pkgshare.install "ash.zsh"
     
+    # Automatically create .ash directory and set up shell integration
+    ash_dir = "#{ENV['HOME']}/.ash"
+    system "mkdir", "-p", ash_dir
+    system "cp", "#{pkgshare}/ash.zsh", "#{ash_dir}/"
+    puts "✅ Created Ash directory: #{ash_dir}"
+    puts "✅ Copied shell integration to #{ash_dir}"
+    
     # Create installation script
     (bin/"ash-install").write <<~EOS
       #!/bin/bash
@@ -85,8 +92,10 @@ class Ash < Formula
     <<~EOS
       🎉 Ash has been installed!
       
+      The ~/.ash directory has been created automatically.
+      
       To complete the installation:
-      1. Run: ash-install
+      1. Run: ash-install (to add to your shell configuration)
       2. Restart your terminal or run: source ~/.zshrc
       3. Enable Ash mode with Ctrl+G
       
