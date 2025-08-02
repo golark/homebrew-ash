@@ -93,16 +93,11 @@ class Ash < Formula
       To uninstall shell integration:
       Run: ash-uninstall
       
+      Note: When uninstalling with 'brew uninstall ash', 
+      you may need to manually remove ~/.ash directory:
+      rm -rf ~/.ash
+      
       For more information, visit: #{homepage}
     EOS
-  end
-  
-  def post_uninstall
-    # Remove .ash directory when uninstalling
-    ash_dir = "#{ENV['HOME']}/.ash"
-    if Dir.exist?(ash_dir)
-      system "rm", "-rf", ash_dir
-      puts "🗑️  Removed Ash directory: #{ash_dir}"
-    end
   end
 end 
