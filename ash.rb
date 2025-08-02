@@ -96,4 +96,13 @@ class Ash < Formula
       For more information, visit: #{homepage}
     EOS
   end
+  
+  def post_uninstall
+    # Remove .ash directory when uninstalling
+    ash_dir = "#{ENV['HOME']}/.ash"
+    if Dir.exist?(ash_dir)
+      system "rm", "-rf", ash_dir
+      puts "🗑️  Removed Ash directory: #{ash_dir}"
+    end
+  end
 end 
