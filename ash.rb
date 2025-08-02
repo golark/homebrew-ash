@@ -62,8 +62,8 @@ class Ash < Formula
       # Remove from PATH
       sed -i '' '/export PATH="#{HOMEBREW_PREFIX}\/bin:$PATH"/d' ~/.zshrc
       
-      # Remove ash.zsh source
-      sed -i '' '/source $HOME\/.ash\/ash.zsh/d' ~/.zshrc
+      # Remove ash.zsh source (using a simpler pattern)
+      sed -i '' '/source.*ash.zsh/d' ~/.zshrc
       
       # Remove .ash directory
       if [[ -d "$HOME/.ash" ]]; then
