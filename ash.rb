@@ -1,12 +1,12 @@
 class Ash < Formula
   desc "AI-powered shell assistant that translates natural language to commands"
   homepage "https://github.com/golark/ash"
-  version "0.0.8-homebrew"
+  version "0.0.9-toggle-fix"
   license "Apache-2.0"
   
-  # GitHub release URL for v0.0.8-homebrew
-  url "https://github.com/golark/ash/releases/download/v0.0.8-homebrew/ash-v0.0.8-homebrew.tar.gz"
-  sha256 "21a26225be48e7afd1ad228b6fceeb3b17d700d43d196f09e1899ef06dc70105"
+  # GitHub release URL for v0.0.9-toggle-fix
+  url "https://github.com/golark/ash/releases/download/v0.0.9-toggle-fix/ash-v0.0.9-toggle-fix.tar.gz"
+  sha256 "9b9cf46e8b4e7ef3c578e908b4869c0ad59f57167fa569e8c420043e12238965"
   
   depends_on :macos
   
