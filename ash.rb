@@ -6,7 +6,7 @@ class Ash < Formula
   
   # GitHub release URL for v0.1.2
   url "https://github.com/golark/ash/releases/download/v0.1.3/ash-0.1.3.tar.gz"
-  sha256 "8a0c79ba17cc8ea963ea111f012f9734fa1b54612409c29bda2437e1122d0907"
+  sha256 "2698c24539d692fa75cf335d908e88b79e91bfd9c385ddc1d6ca2c03bf8fab45"
   
   depends_on :macos
   
