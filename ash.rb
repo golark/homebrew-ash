@@ -1,44 +1,39 @@
 class Ash < Formula
   desc "AI-powered shell assistant that translates natural language to commands"
   homepage "https://github.com/golark/ash"
-  version "0.1.3"
+  version "1.0.0"
   license "Apache-2.0"
-  
-  # GitHub release URL for v0.1.2
-  url "https://github.com/golark/ash/releases/download/v0.1.3/ash-0.1.3.tar.gz"
-  sha256 "2698c24539d692fa75cf335d908e88b79e91bfd9c385ddc1d6ca2c03bf8fab45"
-  
+
+  url "https://github.com/golark/ash/releases/download/v1.0.0/ash-v1.0.0-dirty-darwin-arm64.tar.gz"
+  sha256 "9ec8123c161fcde8d7d57979c0dcd94f2df5f11a23c380fba76b13fd83624edf"
+
   depends_on :macos
-  
+
   def install
-    # Install binaries
-    bin.install "ash-client"
-    bin.install "ash-server"
-    
-    # Install shell integration
-    pkgshare.install "ash.zsh"
-    
-    # Install _internal directory (required for ash-server)
-    bin.install "_internal"
-    
+    # Install binary
+    bin.install "ash"
+
+    # Install shell integration file
+    pkgshare.install "widget.zsh" => "ash.zsh"
+
     # Create installation script
     (bin/"ash-install").write <<~EOS
       #!/bin/bash
+      set -e
+
       echo "🚀 Installing Ash shell integration..."
-      
-      # Create .ash directory
+
       ASH_DIR="$HOME/.ash"
       mkdir -p "$ASH_DIR"
       echo "✅ Created Ash directory: $ASH_DIR"
-      
-      # Copy shell integration to .ash directory
-      cp #{pkgshare}/ash.zsh "$ASH_DIR/"
+
+      cp "#{pkgshare}/ash.zsh" "$ASH_DIR/"
       echo "✅ Copied shell integration to $ASH_DIR"
-      
+
       # Download the AI model if not already present
       MODEL_DIR="$ASH_DIR/models"
       MODEL_FILE="$MODEL_DIR/qwen2.5-coder-3b-instruct-q4_k_m.gguf"
-      
+
       if [[ ! -f "$MODEL_FILE" ]]; then
         echo "📥 Downloading AI model (this may take a few minutes)..."
         mkdir -p "$MODEL_DIR"
@@ -47,75 +42,76 @@ class Ash < Formula
       else
         echo "✅ AI model already exists"
       fi
-      
-      # Add to PATH if not present
-      if ! grep -q 'export PATH="#{HOMEBREW_PREFIX}/bin:$PATH"' ~/.zshrc; then
-        echo 'export PATH="#{HOMEBREW_PREFIX}/bin:$PATH"' >> ~/.zshrc
+
+      # Ensure the Homebrew bin is in the user's PATH
+      if ! grep -Fxq 'export PATH="#{HOMEBREW_PREFIX}/bin:$PATH"' "$HOME/.zshrc"; then
+        echo 'export PATH="#{HOMEBREW_PREFIX}/bin:$PATH"' >> "$HOME/.zshrc"
         echo "✅ Added Ash to PATH"
       fi
-      
-      # Source ash.zsh if not present
-      if ! grep -q 'source $HOME/.ash/ash.zsh' ~/.zshrc; then
-        echo 'source $HOME/.ash/ash.zsh' >> ~/.zshrc
+
+      # Source integration if not present
+      if ! grep -Fxq 'source $HOME/.ash/ash.zsh' "$HOME/.zshrc"; then
+        echo 'source $HOME/.ash/ash.zsh' >> "$HOME/.zshrc"
         echo "✅ Added Ash shell integration"
       fi
-      
-      echo ""
+
+      echo
       echo "✅ Ash installation complete!"
       echo "💡 Restart your terminal or run: source ~/.zshrc"
       echo "🎯 Enable Ash mode with Ctrl+G"
-      echo "📖 For help, run: ash-client --help"
+      echo "📖 For help, run: ash --help"
     EOS
     chmod 0755, bin/"ash-install"
-    
-    # Create uninstall script
+
+    # Uninstall script
     (bin/"ash-uninstall").write <<~EOS
       #!/bin/bash
+      set -e
+
       echo "🗑️  Uninstalling Ash shell integration..."
-      
-      # Remove from PATH and source lines using a more reliable method
-      # Create a temporary file without the Ash-related lines
-      grep -v 'export PATH="#{HOMEBREW_PREFIX}/bin:$PATH"' ~/.zshrc | \
-      grep -v 'source.*ash.zsh' > ~/.zshrc.tmp && mv ~/.zshrc.tmp ~/.zshrc
-      echo "✅ Removed Ash configuration from ~/.zshrc"
-      
+
+      # Remove Ash config lines from .zshrc
+      if [[ -f "$HOME/.zshrc" ]]; then
+        grep -vFx 'export PATH="#{HOMEBREW_PREFIX}/bin:$PATH"' "$HOME/.zshrc" | \\
+        grep -vFx 'source $HOME/.ash/ash.zsh' > "$HOME/.zshrc.tmp" && \\
+        mv "$HOME/.zshrc.tmp" "$HOME/.zshrc"
+        echo "✅ Removed Ash configuration from ~/.zshrc"
+      fi
+
       # Remove .ash directory
       if [[ -d "$HOME/.ash" ]]; then
         rm -rf "$HOME/.ash"
         echo "✅ Removed Ash directory: $HOME/.ash"
       fi
-      
+
       echo "✅ Ash shell integration removed"
       echo "💡 Restart your terminal for changes to take effect"
     EOS
     chmod 0755, bin/"ash-uninstall"
   end
-  
+
   test do
-    # Test that the binaries work
-    system "#{bin}/ash-client", "--help"
-    system "#{bin}/ash-server", "--help"
+    # Test that ash can be invoked
+    system "#{bin}/ash", "--help"
   end
-  
+
   def caveats
     <<~EOS
       🎉 Ash has been installed!
-      
+
       To complete the installation:
       1. Run: ash-install (this will create ~/.ash directory and configure your shell)
       2. Restart your terminal or run: source ~/.zshrc
       3. Enable Ash mode with Ctrl+G
-      
+
       To uninstall shell integration:
       Run: ash-uninstall
-      
-      Note: When uninstalling with 'brew uninstall ash', 
+
+      Note: When uninstalling with 'brew uninstall ash',
       you may need to manually remove ~/.ash directory:
-      rm -rf ~/.ash
-      
+        rm -rf ~/.ash
+
       For more information, visit: #{homepage}
     EOS
   end
-  
-
-end 
+end
