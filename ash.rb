@@ -17,6 +17,29 @@ class Ash < Formula
     prefix.install "widget.zsh"
   end
 
+  def post_install
+    # Add widget.zsh to .zshrc if not already present
+    zshrc = "#{ENV["HOME"]}/.zshrc"
+    widget_line = "source #{prefix}/widget.zsh"
+
+    if File.exist?(zshrc)
+      content = File.read(zshrc)
+      unless content.include?(widget_line)
+        File.open(zshrc, "a") do |f|
+          f.puts("\n# Ash shell widget")
+          f.puts(widget_line)
+        end
+        puts "✅ Added Ash widget to ~/.zshrc"
+      end
+    else
+      File.open(zshrc, "w") do |f|
+        f.puts("# Ash shell widget")
+        f.puts(widget_line)
+      end
+      puts "✅ Created ~/.zshrc with Ash widget"
+    end
+  end
+
   test do
     # Test that ash can be invoked (it will show usage on empty input)
     output = shell_output("#{bin}/ash 2>&1", 1)
@@ -27,8 +50,10 @@ class Ash < Formula
     <<~EOS
       🎉 Ash has been installed!
 
-      To enable the shell widget, add this to your ~/.zshrc:
-        source #{prefix}/widget.zsh
+      The shell widget has been automatically added to your ~/.zshrc.
+      Restart your terminal or run: source ~/.zshrc
+
+      🎯 Enable Ash mode with Ctrl+G
 
       For more information, visit: #{homepage}
     EOS
