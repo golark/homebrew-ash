@@ -7,6 +7,7 @@
 class Ash < Formula
   desc "AI-powered shell assistant that translates natural language to zsh commands"
   homepage "https://github.com/golark/ash"
+  version "1.0.2"
   url "https://github.com/golark/ash/releases/download/v#{version}/ash-v#{version}-darwin-arm64.tar.gz"
   sha256 "5da6e174ab2e5066f856564ec2f3acce697ad209b228a99603c0817f8ffb0e24"
   license "Apache-2.0"
