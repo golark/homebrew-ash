@@ -7,9 +7,9 @@
 class Ash < Formula
   desc "AI-powered shell assistant that translates natural language to zsh commands"
   homepage "https://github.com/golark/ash"
-  version "1.0.6"
+  version "1.0.6-3-g1078764-dirty"
   url "https://github.com/golark/ash/releases/download/v#{version}/ash-v#{version}-darwin-arm64.tar.gz"
-  sha256 "37bf28b0eb3de112d9201295a4ea13608d59ed3255b400bccc5ffebacf8ef67d"
+  sha256 "7f747127f4bf98ee0d36a033f291758a602aa5766a15a42d82b398b878376812"
   license "Apache-2.0"
   head "https://github.com/golark/ash.git", branch: "main"
 
@@ -20,6 +20,30 @@ class Ash < Formula
     bin.install "ash"
     # Install widget script
     prefix.install "widget.zsh"
+  end
+
+  def post_install
+    # Create directory for model storage
+    model_dir = var/"ash"
+    model_dir.mkpath
+
+    # Download the model if it doesn't exist
+    model_path = model_dir/"model.gguf"
+    unless model_path.exist?
+      model_url = "https://github.com/golark/ash/releases/download/v#{version}/ash-model.gguf"
+      ohai "Downloading ASH model..."
+      system "curl", "-L", "-o", model_path, model_url
+    end
+  end
+
+  def caveats
+    <<~EOS
+      The ASH model has been downloaded to:
+        #{var}/ash/model.gguf
+
+      To remove the model when uninstalling, run:
+        rm -rf #{var}/ash
+    EOS
   end
 
   test do
