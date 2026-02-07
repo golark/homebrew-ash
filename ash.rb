@@ -9,7 +9,7 @@ class Ash < Formula
   homepage "https://github.com/golark/ash"
   version "1.0.10"
   url "https://github.com/golark/ash/releases/download/v#{version}/ash-v#{version}-darwin-arm64.tar.gz"
-  sha256 "69b7ba8c683d3d5fb32b63209a0a605a6256de76132de635473bfbb7df31e4f2"
+  sha256 "a74c67b49b821a5436a4b5226485d31709ef40350a3aa69c883e73a8754f97c4"
   license "Apache-2.0"
   head "https://github.com/golark/ash.git", branch: "main"
 
