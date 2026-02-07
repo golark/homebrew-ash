@@ -38,11 +38,12 @@ class Ash < Formula
 
   def caveats
     <<~EOS
-      The ASH model has been downloaded to:
-        #{var}/ash/model.gguf
-
-      To remove the model when uninstalling, run:
-        rm -rf #{var}/ash
+    # On first use, ASH will download a machine learning model locally to ensure all generations run fully on your device (no external API calls).
+    # This download may take a little time. Please be patient during the initial setup.
+    #
+    # To enable the shell assistant widget automatically, add the following line to your .zshrc:
+    #   source #{opt_prefix}/widget.zsh
+    # Then reload your terminal.
     EOS
   end
 
