@@ -5,11 +5,11 @@
 # Instead, please edit the formula template and run `make release-homebrew`.
 
 class Ash < Formula
-  desc "AI-powered shell assistant that translates natural language to zsh commands"
+  desc "AI-powered shell assistant that translates natural language to shell commands"
   homepage "https://github.com/golark/ash"
-  version "1.0.11"
+  version "1.0.13"
   url "https://github.com/golark/ash/releases/download/v#{version}/ash-v#{version}-darwin-arm64.tar.gz"
-  sha256 "ce394c9c43bae887537307804f1bef7e9520fea817deecf84032031367096bad"
+  sha256 "0e13fa89c3c45c72c738c1f98efe3e215cb07b725190145a1d406b6b94a17064"
   license "Apache-2.0"
   head "https://github.com/golark/ash.git", branch: "main"
 
@@ -18,8 +18,9 @@ class Ash < Formula
   def install
     # Install binary from prebuilt tarball
     bin.install "ash"
-    # Install widget script
+    # Install widget scripts for both bash and zsh
     prefix.install "widget.zsh"
+    prefix.install "widget.bash"
   end
 
   def post_install
@@ -36,14 +37,30 @@ class Ash < Formula
     end
   end
 
+  # Remove downloaded model (and any other data) when user runs: brew uninstall --zap ash
+  zap rmdir: [
+    var/"ash",
+  ]
+
   def caveats
     <<~EOS
     # On first use, ASH will download a machine learning model locally to ensure all generations run fully on your device (no external API calls).
     # This download may take a little time. Please be patient during the initial setup.
     #
-    # To enable the shell assistant widget automatically, add the following line to your .zshrc:
+    # To enable the shell assistant widget (Ctrl+G), add to your shell config:
+    #
+    # For Zsh (~/.zshrc):
     #   source #{opt_prefix}/widget.zsh
-    # Then reload your terminal.
+    #
+    # For Bash (~/.bashrc or ~/.bash_profile):
+    #   source #{opt_prefix}/widget.bash
+    #
+    # Then reload your terminal with: source ~/.zshrc (or source ~/.bashrc)
+    #
+    # Usage: Type a natural language command, press Ctrl+G to convert it to a shell command.
+    #
+    # When uninstalling: run "brew uninstall --zap ash" to also remove the downloaded model.
+    # Remember to remove the "source ..." line from your shell config file.
     EOS
   end
 
