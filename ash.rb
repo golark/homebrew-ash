@@ -9,7 +9,7 @@ class Ash < Formula
   homepage "https://github.com/golark/ash"
   version "1.0.13"
   url "https://github.com/golark/ash/releases/download/v#{version}/ash-v#{version}-darwin-arm64.tar.gz"
-  sha256 "0e13fa89c3c45c72c738c1f98efe3e215cb07b725190145a1d406b6b94a17064"
+  sha256 "29a1a91e7a254d0be2db22395b6170011a295e12815a3acf518f136f7a427416"
   license "Apache-2.0"
   head "https://github.com/golark/ash.git", branch: "main"
 
@@ -23,44 +23,27 @@ class Ash < Formula
     prefix.install "widget.bash"
   end
 
-  def post_install
-    # Create directory for model storage
-    model_dir = var/"ash"
-    model_dir.mkpath
-
-    # Download the model if it doesn't exist
-    model_path = model_dir/"model.gguf"
-    unless model_path.exist?
-      model_url = "https://github.com/golark/ash/releases/download/v#{version}/ash-model.gguf"
-      ohai "Downloading ASH model..."
-      system "curl", "-L", "-o", model_path, model_url
-    end
-  end
-
-  # Remove downloaded model (and any other data) when user runs: brew uninstall --zap ash
-  zap rmdir: [
-    var/"ash",
-  ]
-
   def caveats
     <<~EOS
-    # On first use, ASH will download a machine learning model locally to ensure all generations run fully on your device (no external API calls).
-    # This download may take a little time. Please be patient during the initial setup.
-    #
-    # To enable the shell assistant widget (Ctrl+G), add to your shell config:
-    #
-    # For Zsh (~/.zshrc):
-    #   source #{opt_prefix}/widget.zsh
-    #
-    # For Bash (~/.bashrc or ~/.bash_profile):
-    #   source #{opt_prefix}/widget.bash
-    #
-    # Then reload your terminal with: source ~/.zshrc (or source ~/.bashrc)
-    #
-    # Usage: Type a natural language command, press Ctrl+G to convert it to a shell command.
-    #
-    # When uninstalling: run "brew uninstall --zap ash" to also remove the downloaded model.
-    # Remember to remove the "source ..." line from your shell config file.
+    To enable the shell assistant widget (Ctrl+G), add to your shell config:
+
+    For Zsh (~/.zshrc):
+      source #{opt_prefix}/widget.zsh
+
+    For Bash (~/.bashrc or ~/.bash_profile):
+      source #{opt_prefix}/widget.bash
+
+    Then reload your terminal with: source ~/.zshrc (or source ~/.bashrc)
+
+    Usage: Type a natural language command, press Ctrl+G to convert it.
+
+    Note: On first use, ash will download a ~2GB model to ~/.ash/models/
+    This ensures all processing runs locally on your device.
+
+    To uninstall completely:
+      brew uninstall ash
+      rm -rf ~/.ash/models/  # Remove downloaded model
+      # Remove the "source ..." line from your shell config
     EOS
   end
 
